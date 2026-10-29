@@ -23,6 +23,7 @@
     "verify": "tsx scripts/runVerify.ts"
   },
   "dependencies": {
+    "@chainlink/contracts": "^1.5.0",
     "@inquirer/password": "^4.0.2",
     "@openzeppelin/contracts": "^5.0.2",
     "dotenv": "^16.4.5",
