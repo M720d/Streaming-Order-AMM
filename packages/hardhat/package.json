@@ -16,6 +16,8 @@
     "fork": "MAINNET_FORKING_ENABLED=true hardhat node --network hardhat",
     "format": "prettier --write './**/*.(ts|sol)'",
     "generate": "yarn account:generate",
+    "keeper": "tsx scripts/keeper.ts",
+    "arb": "tsx scripts/arb.ts",
     "hardhat-verify": "hardhat verify",
     "lint": "eslint",
     "lint-staged": "eslint",
