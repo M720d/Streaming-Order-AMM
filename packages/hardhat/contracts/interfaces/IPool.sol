@@ -3,9 +3,10 @@ pragma solidity >=0.8.0 <0.9.0;
 
 /// @title IPool
 /// @notice Interface the OrderBook and PriceGuard build against.
-/// @dev DRAFT: not yet agreed with Aditya. Do not build on it until Dev confirms.
-///      token0 = WBTC (8 decimals), token1 = USDC (6 decimals).
-///      Prices are token1 raw units per token0 raw unit, scaled by 1e18.
+/// @dev STATUS: approved by Dev; waiting for Aditya's ack in the group chat before the day-two freeze.
+///      token0 = WBTC (8 decimals), token1 = USDC (6 decimals); the pool reads both decimals at construction.
+///      PRICE UNIT (one unit across Pool, PriceGuard and OrderBook): USDC per ONE WHOLE WBTC, scaled by 1e18,
+///      so 60_000 USDC/BTC is 60_000e18. Raw-unit ratios never leave the Pool.
 interface IPool {
     event LiquidityAdded(address indexed provider, uint256 amount0, uint256 amount1, uint256 shares, address indexed to);
     event LiquidityRemoved(address indexed provider, uint256 amount0, uint256 amount1, uint256 shares, address indexed to);
@@ -57,10 +58,13 @@ interface IPool {
     /// @notice Quote for swapExactIn with the 30 bps fee applied.
     function getAmountOut(address tokenIn, uint256 amountIn) external view returns (uint256 amountOut);
 
-    /// @notice Spot price, token1 per token0, scaled by 1e18.
-    function spotPrice() external view returns (uint256);
+    /// @notice Swap fee in basis points (immutable, 30).
+    function FEE_BPS() external view returns (uint256);
 
-    /// @notice Time-weighted average price over the last `window` seconds, scaled by 1e18.
+    /// @notice Spot price in USDC per whole WBTC, scaled by 1e18, derived from the current reserves.
+    function spotPriceE18() external view returns (uint256 priceE18);
+
+    /// @notice Time-weighted average price over the last `window` seconds, in the same unit as spotPriceE18.
     /// @dev Reverts with InsufficientHistory if the pool is younger than `window`.
-    function consultTwap(uint32 window) external view returns (uint256 price);
+    function consultTwapE18(uint32 window) external view returns (uint256 priceE18);
 }

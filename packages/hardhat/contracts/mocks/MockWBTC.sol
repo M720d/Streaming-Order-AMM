@@ -1,5 +1,5 @@
 //SPDX-License-Identifier: MIT
-pragma solidity >=0.8.0 <0.9.0;
+pragma solidity ^0.8.20;
 
 import { ERC20 } from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
@@ -13,14 +13,20 @@ contract MockWBTC is ERC20, Ownable {
 
     constructor(address initialOwner) ERC20("Mock Wrapped BTC", "mWBTC") Ownable(initialOwner) {}
 
+    /// @notice Token decimals, fixed by the real asset this mock stands in for.
     function decimals() public pure override returns (uint8) {
         return 8;
     }
 
+    /// @notice Mint `amount` (raw units) to `to`. Only the owner can call this.
+    /// @param to Recipient of the new tokens.
+    /// @param amount Amount in raw token units.
     function mint(address to, uint256 amount) external onlyOwner {
         _mint(to, amount);
     }
 
+    /// @notice Anyone can mint up to `FAUCET_CAP` (raw units) to themselves, for Sepolia testing.
+    /// @param amount Amount in raw token units; reverts with FaucetCapExceeded above the cap.
     function faucet(uint256 amount) external {
         if (amount > FAUCET_CAP) revert FaucetCapExceeded(amount, FAUCET_CAP);
         _mint(msg.sender, amount);

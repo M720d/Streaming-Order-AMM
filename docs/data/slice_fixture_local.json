@@ -1,0 +1,165 @@
+{
+  "description": "Local hardhat run of the real contracts. See scripts/exportSliceFixture.ts.",
+  "params": {
+    "reserve0": "50000000000",
+    "reserve1": "30000000000000",
+    "total": "2000000000",
+    "slices": 5,
+    "interval": 600,
+    "externalPriceUsdcPerWbtc": 60000,
+    "feeBps": 30
+  },
+  "lumpSum": {
+    "amountOut": "1150517367388",
+    "after": {
+      "reserve0": "52000000000",
+      "reserve1": "28849482632612",
+      "spotPriceE18": "55479774293484615384615"
+    }
+  },
+  "noRefill": {
+    "slices": [
+      {
+        "amountIn": "400000000",
+        "amountOut": "237386604442",
+        "slicesLeft": 4,
+        "gasUsed": "199791",
+        "after": {
+          "reserve0": "50400000000",
+          "reserve1": "29762613395558",
+          "spotPriceE18": "59052804356265873015873"
+        }
+      },
+      {
+        "amountIn": "400000000",
+        "amountOut": "233653752099",
+        "slicesLeft": 3,
+        "gasUsed": "165591",
+        "after": {
+          "reserve0": "50800000000",
+          "reserve1": "29528959643459",
+          "spotPriceE18": "58127873313895669291338"
+        }
+      },
+      {
+        "amountIn": "400000000",
+        "amountOut": "230008303042",
+        "slicesLeft": 2,
+        "gasUsed": "165591",
+        "after": {
+          "reserve0": "51200000000",
+          "reserve1": "29298951340417",
+          "spotPriceE18": "57224514336751953125000"
+        }
+      },
+      {
+        "amountIn": "400000000",
+        "amountOut": "226447549062",
+        "slicesLeft": 1,
+        "gasUsed": "165591",
+        "after": {
+          "reserve0": "51600000000",
+          "reserve1": "29072503791355",
+          "spotPriceE18": "56342061611153100775193"
+        }
+      },
+      {
+        "amountIn": "400000000",
+        "amountOut": "222968886051",
+        "slicesLeft": 0,
+        "gasUsed": "160775",
+        "after": {
+          "reserve0": "52000000000",
+          "reserve1": "28849534905304",
+          "spotPriceE18": "55479874817892307692307"
+        }
+      }
+    ],
+    "arbs": [],
+    "proceeds": "1150465094696",
+    "remainingIn": "0"
+  },
+  "withRefill": {
+    "slices": [
+      {
+        "amountIn": "400000000",
+        "amountOut": "237386604442",
+        "slicesLeft": 4,
+        "gasUsed": "199791",
+        "after": {
+          "reserve0": "50400000000",
+          "reserve1": "29762613395558",
+          "spotPriceE18": "59052804356265873015873"
+        }
+      },
+      {
+        "amountIn": "400000000",
+        "amountOut": "236681859741",
+        "slicesLeft": 3,
+        "gasUsed": "165591",
+        "after": {
+          "reserve0": "50475765317",
+          "reserve1": "29719220820501",
+          "spotPriceE18": "58878197554523668441993"
+        }
+      },
+      {
+        "amountIn": "400000000",
+        "amountOut": "236682946936",
+        "slicesLeft": 2,
+        "gasUsed": "165591",
+        "after": {
+          "reserve0": "50476845254",
+          "reserve1": "29719998264769",
+          "spotPriceE18": "58878478072901873512160"
+        }
+      },
+      {
+        "amountIn": "400000000",
+        "amountOut": "236682989716",
+        "slicesLeft": 1,
+        "gasUsed": "165591",
+        "after": {
+          "reserve0": "50478035951",
+          "reserve1": "29720710300915",
+          "spotPriceE18": "58878499808838570712875"
+        }
+      },
+      {
+        "amountIn": "400000000",
+        "amountOut": "236683034041",
+        "slicesLeft": 0,
+        "gasUsed": "160775",
+        "after": {
+          "reserve0": "50479226484",
+          "reserve1": "29721422434017",
+          "spotPriceE18": "58878521927109092110073"
+        }
+      }
+    ],
+    "arbs": [
+      {
+        "usdcIn": "193289284684",
+        "wbtcOut": "324234683",
+        "after": "{\"reserve0\":\"50075765317\",\"reserve1\":\"29955902680242\",\"spotPriceE18\":\"59821157980529961353001\"}"
+      },
+      {
+        "usdcIn": "237460391204",
+        "wbtcOut": "398920063",
+        "after": "{\"reserve0\":\"50076845254\",\"reserve1\":\"29956681211705\",\"spotPriceE18\":\"59821422575161407750608\"}"
+      },
+      {
+        "usdcIn": "237395025862",
+        "wbtcOut": "398809303",
+        "after": "{\"reserve0\":\"50078035951\",\"reserve1\":\"29957393290631\",\"spotPriceE18\":\"59821422149909187439889\"}"
+      },
+      {
+        "usdcIn": "237395167143",
+        "wbtcOut": "398809467",
+        "after": "{\"reserve0\":\"50079226484\",\"reserve1\":\"29958105468058\",\"spotPriceE18\":\"59821422117271375065594\"}"
+      }
+    ],
+    "proceeds": "1184117434876",
+    "remainingIn": "0"
+  }
+}
