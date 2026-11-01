@@ -1,0 +1,25 @@
+{
+  "measured": "2026-11-01",
+  "network": "hardhat (in-process)",
+  "solc": "0.8.30, optimizer 200 runs",
+  "gasUsed": {
+    "deploy_MockWBTC": 636703,
+    "deploy_MockUSDC": 637303,
+    "deploy_Pool": 1749662,
+    "deploy_PriceGuard": 608992,
+    "deploy_OrderBook": 2268674,
+    "faucet_wbtc_first": 50856,
+    "approve_wbtc_exact": 46353,
+    "createOrder_first": 158734,
+    "executeSlice_first": 190399,
+    "executeSlice_middle": 156199,
+    "executeSlice_last": 151383,
+    "executeSlice_mean_4": 163545,
+    "claim_first": 56705,
+    "cancel_finished": 41340,
+    "createOrder_second": 158734,
+    "cancel_unfilled": 56148,
+    "approve_usdc_exact": 46365,
+    "swapExactIn_usdc_in": 117775
+  }
+}

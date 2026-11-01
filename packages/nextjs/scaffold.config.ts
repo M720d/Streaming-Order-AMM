@@ -11,11 +11,15 @@ export type BaseConfig = {
 
 export type ScaffoldConfig = BaseConfig;
 
+const TARGET_NETWORKS =
+  process.env.NEXT_PUBLIC_TARGET_NETWORK === "sepolia" ? ([chains.sepolia] as const) : ([chains.hardhat] as const);
+
 export const DEFAULT_ALCHEMY_API_KEY = "IZYEU2cWBgnFmgiTAgpWD";
 
 const scaffoldConfig = {
   // The networks on which your DApp is live
-  targetNetworks: [chains.hardhat],
+  // Local by default (keeps the burner wallet for demos); set NEXT_PUBLIC_TARGET_NETWORK=sepolia for the live app.
+  targetNetworks: TARGET_NETWORKS,
   // The interval at which your front-end polls the RPC servers for new data (it has no effect if you only target the local network (default is 4000))
   pollingInterval: 3000,
   // This is ours Alchemy's default API key.

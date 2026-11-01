@@ -81,6 +81,9 @@ Token order: token0 = WBTC (8 dec), token1 = USDC (6 dec).
 | PriceGuard | Dev (was Aditya) | done: `contracts/PriceGuard.sol` + `mocks/MockAggregator.sol`, `test/PriceGuard.ts` 16 tests (zero, negative, stale, future, answeredInRound, bounds at the exact limit, caps, non-owner). Owner changes only `maxStaleness` (<= 1 day) and `maxDeviationBps` (<= 2000) |
 | Keeper script, arbitrage refill script | Sid | done locally 2026-11-01: `scripts/keeper.ts`, `scripts/arb.ts`, `scripts/offchain/`; guide `docs/offchain.md`. Run as CLIs against a local `hardhat node` (fill, guard skip, finished-order drop, arb trades all observed). Live Sepolia run **not tested** |
 | End-to-end tests | Sid | done: `test/EndToEnd.ts` 17 tests (streamed proceeds 1,184,117 USDC vs lump sum 1,150,518 USDC for 20 WBTC / 5 slices, +292 bps; TooEarly revert; stale-oracle; double-send; arb cases). Full suite 94 passing |
+| Front end | Sid | done locally 2026-11-01: see `docs/frontend.md`. Browser-tested with the burner wallet against the real contracts on a local node. Sepolia and MetaMask **not tested** |
+| Analysis Part C | Sid | done 2026-11-01: `docs/analysis_costs.ipynb` (executed, checks pass), gas from `scripts/measureCostGas.ts` -> `docs/data/gas_costs_local.json`; prose in `docs/report-section-4-7-part-c.md` |
+| Report sections 1, 6, 7, 8; video plan; README; submission.json | Sid | drafted 2026-11-01: `docs/report-sections-1-6-7-8.md`, `docs/video-plan.md`, `README.md`, `submission.json` (Sepolia fields null) |
 | Full-repo Slither | Sid | done: `docs/slither-full.md` (no High; combined unit 20 results, all previously explained) |
 | Pool analysis notebook `docs/analysis_pool.ipynb` (Part A) | Dev | done, executes top to bottom, all asserts pass; uses E18 price unit. Not committed. |
 | Slicing notebook (Part B) | Dev (was Sid/Aditya) | done and executed: `docs/analysis_slicing.ipynb`; model matches the real contracts exactly (56 comparisons via `scripts/exportSliceFixture.ts` -> `docs/data/slice_fixture_local.json`). **Sepolia slice reconciliation cell is written but PENDING (no deployment yet); rubric-required** |
@@ -92,6 +95,15 @@ Token order: token0 = WBTC (8 dec), token1 = USDC (6 dec).
 | `docs/ai-use.md` | all | order-side and pool-side entries present (2026-11-01) |
 
 ## 7. Open questions / risks
+
+**Team decisions needed before submission (recommendation in brackets, by Sid's session 2026-11-01):**
+1. Execution fee and protocol fee share: not built. [Present both as future work in report 2.8 and 4.7; do not add contract code three days before the deadline. Part C shows the as-built protocol never breaks even, so the report must say it.]
+2. `YourContract.sol` + `deploy/00_deploy_your_contract.ts` + `test/YourContract.ts` (scaffold sample). [Delete before the final tag; the test count then drops by 2.]
+3. Pool as the LP token instead of a separate ERC-20 (report 2.8). [Keep; explain it in one sentence.]
+4. Sandwich limitation (report 2.4). [Accept and state the bound.]
+5. Early-LP rewards in the share token (proposal; report 6.3). [Future work.]
+6. Video speaker split (`docs/video-plan.md`). [As drafted.]
+7. Each member confirms in report Section 8 which files they read in full.
 - Sepolia RPC URL, Etherscan API key and deployer key (testnet-only) not yet provided; needed for deploy/verify.
 - Pool rounding direction and minimum-liquidity lock amount: implemented as floor division everywhere with 1000 shares locked; Dev has not explicitly signed off.
 - Dev's pool brief said OrderBook/PriceGuard are Aditya's; this file says Dev now owns them. The pool session has not heard that from Dev directly, so it stays on pool files until told.
@@ -100,6 +112,8 @@ Token order: token0 = WBTC (8 dec), token1 = USDC (6 dec).
 - Time left is short; prioritise Pool + OrderBook + tests before stretch goals (frontend).
 
 ## 8. Handoff log (newest first; one line each: date, who/which agent, what, tested?, assumptions)
+- 2026-11-01 Claude (packaging session, for Sid): Part C notebook + gas script, report sections 1/4.7/6/7/8, video plan, README, draft submission.json, root `yarn keeper`/`yarn arb`. Tested: notebook executes with asserts; `yarn test` 94 passing from root; root bot commands route correctly. NOT done: anything Sepolia; final tag; sharing the repo (needs professor/TA GitHub usernames). Assumed: gas 10 gwei, ETH $3,000, 5 bps protocol share, 10 bps execution fee, $1,782/month fixed costs (all stated in the notebook); submission.json layout guessed (course template not in repo).
+- 2026-11-01 Claude (front-end session, for Sid): built the Scaffold-ETH page (pool, create order with preview and confirmation, orders with progress/claim/cancel, tx status, plain-language errors, stale-feed banner); network chosen by `NEXT_PUBLIC_TARGET_NETWORK`. Tested: tsc, eslint, `next build`, headless-Chrome flow of every action on a local node. NOT done: Sepolia, MetaMask. Edited scaffold files: `getParsedError.ts` (friendly messages first), `scaffold.config.ts`, `Header.tsx`, `layout.tsx`. `deployedContracts.ts` holds the local 31337 deployment.
 - 2026-11-01 Claude (off-chain session, for Sid): wrote keeper, arb bot, `test/EndToEnd.ts`, `docs/offchain.md`, `docs/slither-full.md`; added `yarn keeper`/`yarn arb` and env entries. Tested: full suite 94 passing, eslint clean on new files, both CLIs run against a local `hardhat node`; found and fixed ethers' 250 ms nonce cache (provider `cacheTimeout: -1`). Side effect: a local `yarn deploy` regenerated `packages/nextjs/contracts/deployedContracts.ts` (chain 31337). NOT done: Sepolia run, front end, Part C, README/submission.json, report sections 1/6/7/8. Assumed: no execution fee exists on chain, so the bots model none; arb valued at oracle price with USDC = 1 USD.
 - 2026-11-01 Claude (pool session, for Dev): finished pool tasks 5, 6, 8: Slither, gas (one change: pack reserves + timestamp into one slot, 8% off swaps), report 3 and 5 draft; pragmas to ^0.8.20. Tested: full suite 77 passing before and after the packing; Slither on final code; re-executed `analysis_slicing.ipynb` on a copy (0 errors, 56 comparisons equal). NOT done: Sepolia deploy and verification, any commit/push, human review. Assumed: report Section 5 = security/testing/gas.
 - 2026-11-01 Claude (order session, for Dev): wrote PriceMath, PriceGuard, OrderBook, mocks, tests (full suite 76 passing, eslint clean), Slither + gas docs, deploy scripts, `analysis_slicing.ipynb`, `report-sections-2-4.md`, `deployment.md`. Tested: all of the above locally; mutation check on OrderBook. NOT done: Sepolia deploy, Etherscan verification, Sepolia slice reconciliation, any live-network step; keeper/arbitrage scripts (Sid). Assumed: no OrderBook owner, no execution fee (proposal mentions one: not built), Pool-as-LP-token accepted, interface sources untouched. Did not edit Pool files.

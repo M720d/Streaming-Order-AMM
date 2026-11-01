@@ -1,0 +1,98 @@
+{
+  "_status": "DRAFT. Structure is a best guess: copy these values into the template from the course brief. null = needs the Sepolia deployment.",
+  "project": "Streaming-Order AMM",
+  "course": "FRE-GY 6931 Blockchain & Cryptocurrency, Fall 2026",
+  "topic": "Topic 1: Automated Market Maker",
+  "team": [
+    { "name": "Aditya Shah", "netid": "as22008" },
+    { "name": "Siddhant Yadav", "netid": "sy4583" },
+    { "name": "Dev Salvi", "netid": "ds8259" }
+  ],
+  "repository": "https://github.com/M720d/Streaming-Order-AMM",
+  "final_tag": "final",
+  "final_commit": null,
+  "network": { "name": "sepolia", "chain_id": 11155111 },
+  "contracts": {
+    "MockWBTC": { "address": null, "deploy_tx": null, "etherscan_verified": null },
+    "MockUSDC": { "address": null, "deploy_tx": null, "etherscan_verified": null },
+    "Pool": { "address": null, "deploy_tx": null, "etherscan_verified": null, "note": "also the LP share token (ERC-20)" },
+    "PriceGuard": { "address": null, "deploy_tx": null, "etherscan_verified": null },
+    "OrderBook": { "address": null, "deploy_tx": null, "etherscan_verified": null },
+    "ChainlinkBtcUsdFeed": { "address": "0x1b44F3514812d835EB1BDB0acB33d3fA3351Ee43", "external": true }
+  },
+  "key_transactions": {
+    "seed_pool_addLiquidity": null,
+    "swapExactIn": null,
+    "createOrder": null,
+    "executeSlice_by_keeper": null,
+    "sliceSkipped_or_guard_evidence": null,
+    "arbitrage_refill_swap": null,
+    "claim": null,
+    "cancel": null
+  },
+  "features": [
+    {
+      "feature": "Constant-product pool, 30 bps fee, LP shares, TWAP",
+      "files": ["packages/hardhat/contracts/Pool.sol", "packages/hardhat/test/Pool.ts"],
+      "tx": null, "video_timestamp": null
+    },
+    {
+      "feature": "ERC-721 streaming orders in a fixed number of equal slices",
+      "files": ["packages/hardhat/contracts/OrderBook.sol", "packages/hardhat/test/OrderBook.ts"],
+      "tx": null, "video_timestamp": null
+    },
+    {
+      "feature": "Chainlink price guard with staleness, sign and round checks; skip on deviation",
+      "files": ["packages/hardhat/contracts/PriceGuard.sol", "packages/hardhat/test/PriceGuard.ts"],
+      "tx": null, "video_timestamp": null
+    },
+    {
+      "feature": "Off-chain keeper (no double-send, logs with tx hash)",
+      "files": ["packages/hardhat/scripts/keeper.ts", "packages/hardhat/scripts/offchain/keeperCore.ts", "docs/offchain.md"],
+      "tx": null, "video_timestamp": null
+    },
+    {
+      "feature": "Arbitrage bot that refills the pool between slices",
+      "files": ["packages/hardhat/scripts/arb.ts", "packages/hardhat/scripts/offchain/arbCore.ts"],
+      "tx": null, "video_timestamp": null
+    },
+    {
+      "feature": "End-to-end tests: streamed proceeds beat a lump sum (+292 bps); revert test",
+      "files": ["packages/hardhat/test/EndToEnd.ts"],
+      "tx": null, "video_timestamp": null
+    },
+    {
+      "feature": "One-command test suite with expected-revert, reentrancy and invariant tests (94 passing)",
+      "files": ["packages/hardhat/test/"], "command": "yarn test",
+      "tx": null, "video_timestamp": null
+    },
+    {
+      "feature": "Slither with every finding fixed or explained",
+      "files": ["docs/slither-full.md", "docs/slither-pool.md", "docs/slither-orders.md"],
+      "tx": null, "video_timestamp": null
+    },
+    {
+      "feature": "Gas measurement with before-and-after changes",
+      "files": ["docs/gas-pool.md", "docs/gas-orders.md", "docs/data/gas_costs_local.json"],
+      "tx": null, "video_timestamp": null
+    },
+    {
+      "feature": "Front end: create order with impact preview and confirmation, progress, claim, cancel, stale-feed warning",
+      "files": ["packages/nextjs/app/page.tsx", "packages/nextjs/app/_components/", "docs/frontend.md"],
+      "url": null, "tx": null, "video_timestamp": null
+    },
+    {
+      "feature": "Financial analysis Parts A, B, C with model-to-contract reconciliation",
+      "files": ["docs/analysis_pool.ipynb", "docs/analysis_slicing.ipynb", "docs/analysis_costs.ipynb"],
+      "sepolia_reconciliation_tx": null, "video_timestamp": null
+    }
+  ],
+  "report_sections": [
+    "docs/report-sections-1-6-7-8.md",
+    "docs/report-sections-2-4.md",
+    "docs/report-section-4-7-part-c.md",
+    "docs/report-sections-3-5.md"
+  ],
+  "video": { "url": null, "plan": "docs/video-plan.md" },
+  "ai_use_log": "docs/ai-use.md"
+}

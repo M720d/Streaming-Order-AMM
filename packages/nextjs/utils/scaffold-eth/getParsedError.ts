@@ -1,4 +1,5 @@
 import { BaseError as BaseViemError, ContractFunctionRevertedError } from "viem";
+import { friendlyErrorMessage } from "~~/utils/streaming/errors";
 
 /**
  * Parses an viem/wagmi error to get a displayable string
@@ -6,6 +7,10 @@ import { BaseError as BaseViemError, ContractFunctionRevertedError } from "viem"
  * @returns parsed error string
  */
 export const getParsedError = (error: any): string => {
+  // Streaming-AMM: known failures get a plain-language message before the generic parsing below.
+  const friendly = friendlyErrorMessage(error);
+  if (friendly) return friendly;
+
   const parsedError = error?.walk ? error.walk() : error;
 
   if (parsedError instanceof BaseViemError) {
