@@ -36,6 +36,13 @@ async function main() {
     orderBook: requireEnv("ORDER_BOOK"),
     once,
   });
+  if (numEnv("START_BLOCK", 0) === 0 && net.chainId !== 31337n) {
+    logRecord(consoleLogger, "keeper", {
+      event: "warn",
+      detail:
+        "START_BLOCK is 0 on a live chain: the first scan walks every block. Set it to the OrderBook deploy block.",
+    });
+  }
 
   let stopping = false;
   for (const sig of ["SIGINT", "SIGTERM"] as const) process.on(sig, () => (stopping = true));
