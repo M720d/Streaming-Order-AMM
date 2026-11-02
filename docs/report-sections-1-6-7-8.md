@@ -59,7 +59,7 @@ A treasury will not hand a large order to an unknown contract on our word. What 
   far from Chainlink, they are skipped. Every slice must return at least the Chainlink-implied amount minus the seller's own
   tolerance. The web app shows a warning as soon as the feed is stale or close to it.
 - **Evidence.** Verified source on Etherscan **[PENDING]**, Slither results with every finding fixed or explained
-  (`docs/slither-full.md`: no high-severity finding), 94 automated tests including expected-revert, reentrancy, a seeded
+  (`docs/slither-full.md`: no high-severity finding), 92 automated tests including expected-revert, reentrancy, a seeded
   invariant test on the pool, and mutation checks; gas reports; and notebooks that reproduce the contracts to the last unit.
 - **What we cannot offer yet.** No external audit, no track record, a test deployment only. A real launch needs an audit first
   (budgeted in Part C) and a capped period with small limits.
@@ -83,8 +83,8 @@ A treasury will not hand a large order to an unknown contract on our word. What 
 ### 6.4 Business model with numbers
 
 Revenue would come from a **protocol share of the swap fee** (assumed 5 of the 30 bps; LPs keep 25) and an **execution fee**
-(assumed 10 bps of each order's notional, which also pays the keeper's gas). **Neither is implemented in the contracts**; both
-are proposals and need contract changes (Section 4.7). With fixed costs of about $1,800 a month (infrastructure and an audit
+(assumed 10 bps of each order's notional, which also pays the keeper's gas). **Neither is implemented in the contracts: both are future work**, and as built the protocol earns
+nothing. Each needs a contract change (Section 4.7). With fixed costs of about $1,800 a month (infrastructure and an audit
 amortised over two years, no salaries), at 10 gwei and $3,000 ETH, Part C finds:
 
 | Average order | Break-even orders / month | Monthly streaming volume |
@@ -102,7 +102,7 @@ and a **cheap chain** for smaller orders, where keeper gas is a few cents.
 
 | Risk | What could happen | What we do or would do |
 |---|---|---|
-| Smart-contract bug | Funds locked or lost. The slice logic is the likeliest place. | Fixed slice count, flat fee, no admin, reentrancy guards, 94 tests, Slither; an external audit before any real money. |
+| Smart-contract bug | Funds locked or lost. The slice logic is the likeliest place. | Fixed slice count, flat fee, no admin, reentrancy guards, 92 tests, Slither; an external audit before any real money. |
 | Oracle failure | Chainlink stops updating or reports a wrong price. | Stale or invalid prices stop trading; deviation band; per-order tolerance. A wrong-but-fresh price is not detected. |
 | No refill | Nobody arbitrages, so slicing saves nothing and the guard skips slices. | Our own open-source bot; liquidity incentives; the app shows the "no refill" estimate next to the best case. |
 | MEV / sandwich | A searcher moves the pool before a slice. | Loss per slice is bounded by the deviation band and the tolerance. Not prevented (no private mempool). **[OPEN]** (Section 2.4) |
@@ -129,7 +129,7 @@ also stops a large order from finishing: a 50 WBTC order in 20 slices is first s
 fee it covers about $1,800 a month of running costs with four $250k orders a month on L1. That is plausible, but only for large
 orders, and it requires contract changes we did not make.
 
-**What is solid and what is not.** Solid: 94 passing tests, Slither with no high-severity finding, two measured gas improvements
+**What is solid and what is not.** Solid: 92 passing tests, Slither with no high-severity finding, two measured gas improvements
 (pool swaps -8.1%, `createOrder` -22,054 gas), and exact model-to-contract agreement. Not yet: the Sepolia deployment, Etherscan
 verification and live evidence **[PENDING]**; an external audit; protection against sandwiching; the proposed fees and LP
 incentives.
