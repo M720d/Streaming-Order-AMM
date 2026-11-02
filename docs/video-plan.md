@@ -37,4 +37,4 @@ not available to present the analysis, Dev takes 5:30–7:30 and Aditya presents
 - The keeper's log line with its tx hash.
 - The test command and its pass count.
 
-Write the timestamps of each of these into `submission.json` (`evidence[].video_timestamp`) after the edit.
+After the edit, replace each `video TODO` in `submission.json` `features[].evidence` with the moment, e.g. `video 2:10`, and set `video` to the link. The brief says a feature counts only with evidence: a tx hash, a file in the repo, or a video moment.

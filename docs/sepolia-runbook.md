@@ -87,7 +87,7 @@ RPC_URL=https://ethereum-sepolia-rpc.publicnode.com MAX_LOG_RANGE=5000 yarn evid
 ```
 Prints a table with Etherscan links (deploy hashes, first `LiquidityAdded`, `OrderCreated`, `SliceExecuted`, arbitrage `Swap`,
 `Claimed`) and saves `docs/data/evidence_sepolia.json`. It sends nothing and needs no key. Use PublicNode here, not the Alchemy URL: scanning days of blocks 10 at a time would take thousands of requests. It lists what is still missing.
-Copy the hashes into the course's `submission.json` template (the repo's `submission.json` is our own layout, not the course's).
+`submission.json` already follows the course template (checked against the brief); add any new hashes to its `transactions` list.
 Add the video timestamp for each item after the edit.
 
 ## 7. Rubric items that need Sepolia data

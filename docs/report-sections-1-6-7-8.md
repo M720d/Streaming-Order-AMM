@@ -121,7 +121,11 @@ and an ERC-721 order book that sells a large order in equal slices, plus a keepe
 **What we found.** Slicing saves money only when the pool is refilled between slices. Without refill, 20 WBTC sold in 5 slices
 returns 1,150,465 USDC against 1,150,517 for one swap, so slightly less, because each slice pays the fee on a worse price. With our
 arbitrage bot refilling the pool, the same order returned 1,184,117 USDC, **292 bps more**, on the real contracts. The notebook's
-integer model reproduces the contracts exactly (56 of 56 comparisons locally) **[PENDING: Sepolia reconciliation]**. After gas,
+integer model reproduces the contracts exactly (56 of 56 comparisons locally). **On Sepolia** the same formula, applied to the pool
+reserves read from the block before each slice, gives the on-chain output to the last unit for all three slices of a 5 WBTC order
+(slice 1 `0x5e2d5767...`). That order, created from the web app and filled by our keeper with our arbitrage bot refilling the pool,
+returned 387,501.20 USDC, against 384,946.34 for the same 5 WBTC as one swap from the same pool state: **+2,554.87 USDC, +66 bps**;
+replayed without the refill, the three slices would have returned 384,942.53, 3.80 USDC less than the lump sum. After gas,
 slicing pays on L1 from about 0.7 WBTC at 10 gwei, and the saving grows quickly with order size. Without refill the price guard
 also stops a large order from finishing: a 50 WBTC order in 20 slices is first skipped at slice 7.
 
