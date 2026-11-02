@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
 import { useBlock, useReadContract } from "wagmi";
-import { useDeployedContractInfo, useScaffoldReadContract, useTargetNetwork } from "~~/hooks/scaffold-eth";
+import { useScaffoldReadContract, useTargetNetwork } from "~~/hooks/scaffold-eth";
 
-// Chainlink BTC/USD on Sepolia. On a local chain the feed is the MockAggregator from the deployment.
-const SEPOLIA_BTC_USD_FEED = "0x1b44F3514812d835EB1BDB0acB33d3fA3351Ee43";
 const FEED_ABI = [
   {
     type: "function",
@@ -71,8 +69,8 @@ export const useMarket = () => {
     functionName: "getOraclePrice",
   });
 
-  const { data: mockFeed } = useDeployedContractInfo({ contractName: "MockAggregator" });
-  const feedAddress = targetNetwork.id === 11155111 ? SEPOLIA_BTC_USD_FEED : mockFeed?.address;
+  // The guard knows its own feed: Chainlink BTC/USD on Sepolia, the MockAggregator on a local chain.
+  const { data: feedAddress } = useScaffoldReadContract({ contractName: "PriceGuard", functionName: "feed" });
   const { data: round } = useReadContract({
     address: feedAddress as `0x${string}` | undefined,
     abi: FEED_ABI,

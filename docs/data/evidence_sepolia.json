@@ -1,0 +1,111 @@
+{
+  "network": "sepolia",
+  "chainId": 11155111,
+  "scannedBlocks": [
+    12044077,
+    12044161
+  ],
+  "contracts": {
+    "MockWBTC": {
+      "address": "0x2c95a78b3a3fc73c16bdd6394bfe30cc51d37d12",
+      "deployTx": "0x688d1fd66089f0b4403d7b5b0bdefd9d6438755058c0497c8b1a896ba38a9713",
+      "block": 12044077,
+      "gas": {
+        "gasUsed": "4152041",
+        "effectiveGwei": 1
+      }
+    },
+    "MockUSDC": {
+      "address": "0x9cd5587b22d15790a5880d37837cdd091c9ea0b5",
+      "deployTx": "0xae7c03dc001999a316843c1422e1adb8d5a8c77671a827d4c232e13f8d108c30",
+      "block": 12044078,
+      "gas": {
+        "gasUsed": "4156619",
+        "effectiveGwei": 0.001000016
+      }
+    },
+    "Pool": {
+      "address": "0x9461fd23335242663ddf7a9fae994995df7fc8e9",
+      "deployTx": "0xa9f518956712c252595a1c82f20f3f5135a4b7899a7967472d8258ae03ea0fd5",
+      "block": 12044079,
+      "gas": {
+        "gasUsed": "12035012",
+        "effectiveGwei": 1
+      }
+    },
+    "PriceGuard": {
+      "address": "0xe52d276bec7b96bcdd0632050cad5717956289df",
+      "deployTx": "0xe52450a33066410a53cacb31113b19f987abd3738f4bb12ab25dd62cc9f2c026",
+      "block": 12044080,
+      "gas": {
+        "gasUsed": "3924284",
+        "effectiveGwei": 1
+      }
+    },
+    "OrderBook": {
+      "address": "0x9c20dbb0bb17a0532348e69502af3b8b44fefa62",
+      "deployTx": "0xbb0acbd1e5668e3ad448a76b1b50f65c6d3e0c558ba36da19733dd5757385572",
+      "block": 12044081,
+      "gas": {
+        "gasUsed": "15699128",
+        "effectiveGwei": 1
+      }
+    }
+  },
+  "events": {
+    "LiquidityAdded": {
+      "count": 1,
+      "firstTx": "0xf2bea583b5a9303af541ff6593d586d98daba0ece865954d11fd89272098e828",
+      "block": 12044086,
+      "gas": {
+        "gasUsed": "925874",
+        "effectiveGwei": 1
+      }
+    },
+    "Swap (slice, from OrderBook)": {
+      "count": 3,
+      "firstTx": "0x3a523cc9c5ba6c40d79dd4f9c85a65134e1440cc80ce003563eb7a42ad77258b",
+      "block": 12044138,
+      "gas": {
+        "gasUsed": "509033",
+        "effectiveGwei": 0.000472669
+      }
+    },
+    "Swap (trader or arbitrage refill)": {
+      "count": 1,
+      "firstTx": "0xaa2632233333850e87be3b6364f09809a7730f5d88bf6f1c643e57d9bb74ad5f",
+      "block": 12044160,
+      "gas": {
+        "gasUsed": "234251",
+        "effectiveGwei": 0.000472669
+      }
+    },
+    "OrderCreated": {
+      "count": 1,
+      "firstTx": "0x6e434545a9392ba6a9a1de8c27286ebe8f03bd18c98ac4d2ddf58fd35446c221",
+      "block": 12044131,
+      "gas": {
+        "gasUsed": "608006",
+        "effectiveGwei": 0.000472669
+      }
+    },
+    "SliceExecuted": {
+      "count": 3,
+      "firstTx": "0x3a523cc9c5ba6c40d79dd4f9c85a65134e1440cc80ce003563eb7a42ad77258b",
+      "block": 12044138,
+      "gas": {
+        "gasUsed": "509033",
+        "effectiveGwei": 0.000472669
+      }
+    },
+    "Claimed": {
+      "count": 1,
+      "firstTx": "0x5e24556abf7d2eed68314893d45b4c2d232c9c80e1033bfa337a0dca81800abd",
+      "block": 12044161,
+      "gas": {
+        "gasUsed": "60164",
+        "effectiveGwei": 0.000472669
+      }
+    }
+  }
+}

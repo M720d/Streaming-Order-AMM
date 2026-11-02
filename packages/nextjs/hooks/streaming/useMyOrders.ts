@@ -25,14 +25,12 @@ export const useMyOrders = () => {
   const created = useScaffoldEventHistory({
     contractName: "OrderBook",
     eventName: "OrderCreated",
-    fromBlock: 0n,
     watch: true,
     enabled: !!address,
   });
   const skipped = useScaffoldEventHistory({
     contractName: "OrderBook",
     eventName: "SliceSkipped",
-    fromBlock: 0n,
     watch: true,
     enabled: !!address,
   });
