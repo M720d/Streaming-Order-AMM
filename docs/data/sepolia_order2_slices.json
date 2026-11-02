@@ -1,0 +1,37 @@
+{
+  "_note": "Reads from an archive node (state at block-1 and the SliceExecuted event) for the three executeSlice txs of order 2. Used by docs/analysis_slicing.ipynb section 5 when SEPOLIA_RPC_URL is not set. Verify any row on Etherscan or by rerunning the notebook with an archive RPC.",
+  "network": "sepolia",
+  "chainId": 11155111,
+  "orderBook": "0x9c20dbb0bb17a0532348e69502af3b8b44fefa62",
+  "pool": "0x9461fd23335242663ddf7a9fae994995df7fc8e9",
+  "retrieved": "2026-11-01",
+  "slices": [
+    {
+      "tx": "0x5e2d57674c0b396c4c36d080436d7d655d7cc986467b3a595591e76c3f63afa7",
+      "block": 12044422,
+      "reserve0_before": 49906524485,
+      "reserve1_before": 38923228585325,
+      "amountIn": 166666666,
+      "amountOut": 129167076412,
+      "slicesLeft": 2
+    },
+    {
+      "tx": "0xb3ba7ea07ecbee1d9ed18f651070cb568143cf43b1d73827bb78ef25c27ac942",
+      "block": 12044428,
+      "reserve0_before": 49907026754,
+      "reserve1_before": 38923614180343,
+      "amountIn": 166666666,
+      "amountOut": 129167060363,
+      "slicesLeft": 1
+    },
+    {
+      "tx": "0x24a0d1fae617dd5ddd4482a2e74e3875eddd3df0a4de36f908a9c35700fe297c",
+      "block": 12044434,
+      "reserve0_before": 49907525091,
+      "reserve1_before": 38924002850533,
+      "amountIn": 166666668,
+      "amountOut": 129167066208,
+      "slicesLeft": 0
+    }
+  ]
+}
