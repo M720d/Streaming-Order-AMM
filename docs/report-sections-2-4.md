@@ -60,7 +60,7 @@ The NFT holder owns the unsold WBTC and the USDC proceeds. `claim` pays the **cu
 
 ### 2.8 What the proposal listed that is not built [OPEN]
 
-- A small **execution fee** per order and a protocol cut of the swap fee (proposal, "Revenue") are **not implemented**; the order side has no fee and the pool's 30 bps goes entirely to LPs. Section 5 should say so or the team should add it.
+- A small **execution fee** per order and a protocol cut of the swap fee (proposal, "Revenue") are **not implemented**; the order side has no fee and the pool's 30 bps goes entirely to LPs. Decision (Sid, 2026-11-01; Dev to confirm): future work, stated plainly in Sections 4.7, 6.4 and 7.
 - The frontend and the keeper and arbitrage scripts are outside this section.
 - The LP token is the `Pool` contract itself, not a separate ERC-20 as the proposal's table shows. **[OPEN: confirm with Dev that this is acceptable.]**
 

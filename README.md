@@ -39,7 +39,7 @@ cp packages/hardhat/.env.example packages/hardhat/.env      # fill only what you
 ## Run the tests
 
 ```bash
-yarn test            # every contract and end-to-end test (94), with gas stats
+yarn test            # every contract and end-to-end test (92), with gas stats
 ```
 
 Includes expected-revert tests, a seeded invariant test on the pool, reentrancy attacks, and end-to-end tests that run the
@@ -74,7 +74,7 @@ size, minimum profit, retry delays) are in `packages/hardhat/.env.example` and `
 
 ## Sepolia
 
-Deployment and verification: `docs/deployment.md`. Then run the keeper and bot with a Sepolia `RPC_URL`, testnet-only keys
+Step by step (credentials, deploy, demo, evidence): `docs/sepolia-runbook.md`; deploy details: `docs/deployment.md`. Then run the keeper and bot with a Sepolia `RPC_URL`, testnet-only keys
 and the deployed addresses (`START_BLOCK` = the OrderBook deploy block), and start the app with
 `NEXT_PUBLIC_TARGET_NETWORK=sepolia yarn start`. Addresses and transaction evidence: `submission.json`.
 
@@ -94,7 +94,7 @@ Run with `source .venv/bin/activate && jupyter lab docs/` (Python packages: nump
 packages/hardhat/contracts/     Pool, PriceGuard, OrderBook, libraries/PriceMath, interfaces/, mocks/
 packages/hardhat/test/          Pool, PriceGuard, OrderBook, EndToEnd, gas tests
 packages/hardhat/deploy/        01..05 deploy and seed, 98 writes the address file
-packages/hardhat/scripts/       keeper.ts, arb.ts, offchain/ (shared bot code), measureCostGas.ts
+packages/hardhat/scripts/       keeper.ts, arb.ts, offchain/ (shared bot code), fundArb.ts, collectEvidence.ts, measureCostGas.ts
 packages/nextjs/                web app (app/page.tsx, app/_components, hooks/streaming, utils/streaming)
 docs/                           notebooks, report drafts, Slither, gas, deployment, AI-use log
 ```
@@ -102,7 +102,7 @@ docs/                           notebooks, report drafts, Slither, gas, deployme
 ## Known limitations
 
 - A slice can be sandwiched within the guard band and the seller's tolerance (no private mempool).
-- The proposed protocol fee and execution fee are not implemented; the Pool pays the whole 30 bps fee to LPs.
+- The proposed protocol fee and execution fee are not implemented (future work); the Pool pays the whole 30 bps fee to LPs, so as built the protocol earns nothing.
 - No external audit. Testnet only.
 
 Built on [Scaffold-ETH 2](https://scaffoldeth.io) (Hardhat, Next.js, wagmi, viem, RainbowKit). AI use: `docs/ai-use.md`.

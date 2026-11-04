@@ -30,8 +30,9 @@ const scaffoldConfig = {
   // If you want to use a different RPC for a specific network, you can add it here.
   // The key is the chain ID, and the value is the HTTP RPC URL
   rpcOverrides: {
-    // Example:
-    // [chains.mainnet.id]: "https://mainnet.rpc.buidlguidl.com",
+    // Alchemy's free tier allows eth_getLogs over only 10 blocks (checked 2026-11-01), which breaks order discovery.
+    // PublicNode allows 50,000 blocks per query; the Alchemy URL stays as the fallback.
+    [chains.sepolia.id]: "https://ethereum-sepolia-rpc.publicnode.com",
   },
   // This is ours WalletConnect's default project ID.
   // You can get your own at https://cloud.walletconnect.com

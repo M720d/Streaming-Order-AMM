@@ -11,8 +11,24 @@ Gas: `docs/data/gas_costs_local.json` from `packages/hardhat/scripts/measureCost
 **Assumptions, stated once.** Gas price 10 gwei on Ethereum L1, ETH at $3,000, BTC at $60,000. These are round assumptions,
 not observations; the notebook shows 1 to 50 gwei and $2,000 to $5,000. An "L2-like" column at 0.05 gwei shows how much of
 the cost is the chain rather than the design (rollup data fees are ignored). Gas was measured on a local Hardhat chain with
-the deployed compiler settings; the same calls on Sepolia or mainnet run the same EVM, and only first-time transfers to fresh
-addresses cost noticeably more.
+the deployed compiler settings; **the Sepolia deployment contradicts the assumption that other networks cost the same.** Measured on Sepolia
+(2026-11-01, `docs/data/evidence_sepolia.json`): contract creation used about 7x the gas of our local figures (Pool 12.0M, OrderBook
+15.7M, PriceGuard 3.9M, each mock token 4.2M; the table below says 4.63M for the three order-side contracts), a first-time
+`approve` estimates at 129,365 gas against 46,353 locally, and the seed `addLiquidity` used 925,874. The cause is not verified (new
+storage appears to be priced higher on that network). **[OPEN: re-measure the user actions on Sepolia after the demo and either
+replace the table or state both columns.]** The USD figures below are therefore lower bounds for Sepolia-like pricing.
+
+Measured on Sepolia (rehearsal order, 1 WBTC in 3 slices, 2026-11-01), against the local figures used in the table below:
+
+| Action | Local gas | Sepolia gas | Ratio |
+|---|---:|---:|---:|
+| Approve WBTC (exact amount) | 46,353 | 128,273 | 2.8x |
+| `createOrder` | 158,734 | 608,006 | 3.8x |
+| `executeSlice` (first slice) | 190,399 | 509,033 | 2.7x |
+| `swapExactIn` (arbitrage refill) | 117,775 | 234,251 | 2.0x |
+| `claim` | 56,705 | 60,164 | 1.1x |
+
+Actions that create new storage cost far more there; `claim`, which only updates existing storage, barely changes. One order each, so treat the ratios as indicative.
 
 **What each action costs.**
 
@@ -85,5 +101,5 @@ Third, the levers are roughly equal: dropping the protocol share to 0 or the exe
 
 **What this leaves out.** Gas and ETH prices and the order flow are assumptions, not data; break-even says how many orders are
 needed, not how many we would get. Full refill is the best case. Salaries, legal and marketing are excluded from the base case.
-Charging either fee needs contract changes (a fee switch in `Pool`, a fee in `OrderBook`) that were not made; **[OPEN]** the
-team must say in the report whether it presents these fees as future work or drops them (see Section 2.8).
+Charging either fee needs contract changes (a fee switch in `Pool`, a fee in `OrderBook`) that were not made; **Decision (Sid, 2026-11-01; Dev to
+confirm):** the report presents both fees as future work (Sections 2.8, 6.4 and 7).

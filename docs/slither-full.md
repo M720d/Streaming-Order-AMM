@@ -33,7 +33,7 @@ anything, so a non-zero exit code is not a failure.
 | `mocks/MockAggregator.sol` | 1 (solc-version: `^0.8.20` lists known compiler bugs) | see note A |
 | `mocks/MockPool.sol` | 12 | test-only; see note B |
 | `mocks/ReentrantReceiver.sol` | 5 | test-only; see note B |
-| `YourContract.sol` (scaffold sample) | 4 | see note C |
+| ~~`YourContract.sol`~~ (scaffold sample) | 4 | obsolete: file deleted after this scan; see note C |
 | **Combined: Pool + OrderBook + PriceGuard** | **20** | below |
 
 ## Combined unit: 20 results, by detector
@@ -63,9 +63,10 @@ No contract was changed because of this run.
   deploy `MockWBTC`, `MockUSDC`, `Pool`, `PriceGuard`, `OrderBook`; `MockAggregator` only on local networks).
 - **C. `YourContract.sol`.** The unmodified Scaffold-ETH 2 sample (zero-check on the constructor owner, a low-level call in
   `withdraw`, a non-mixedCase parameter, the complex pragma). It is not part of the product, is not deployed with
-  `--tags StreamingAMM`, and is still compiled and tested by the suite. **Recommendation: delete `YourContract.sol`,
-  `deploy/00_deploy_your_contract.ts` and `test/YourContract.ts` before submission** so the scanned repo equals the shipped repo. Not
-  done here because it changes files outside the off-chain scope; the team should decide.
+  `--tags StreamingAMM`, and is still compiled and tested by the suite. **Update 2026-11-01: `YourContract.sol`,
+  `deploy/00_deploy_your_contract.ts` and `test/YourContract.ts` were deleted** (suite 94 -> 92 passing) so the scanned repo equals
+  the shipped repo. Pool, OrderBook and PriceGuard are unchanged, so their results above still hold; Slither was **not** re-run
+  after the deletion.
 
 ## What was not run
 

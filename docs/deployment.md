@@ -21,7 +21,7 @@ Optional env: `PRICE_MAX_STALENESS` (seconds, default 3600), `PRICE_MAX_DEVIATIO
 
 1. `yarn generate` (or `yarn account:import`) for a testnet-only deployer; fund it from a Sepolia faucet. Never use a wallet with real funds.
 2. Put your own `ALCHEMY_API_KEY` and `ETHERSCAN_API_KEY` in `.env` (see `.env.example`).
-3. `SEED_POOL=true yarn deploy --network sepolia --tags StreamingAMM`. Without `--tags`, the scaffold's sample `YourContract` is deployed too.
+3. `SEED_POOL=true yarn deploy --network sepolia --tags StreamingAMM`. (The scaffold sample `YourContract` was deleted, so `--tags` is only a filter now.)
 4. `yarn verify --network sepolia` verifies **every** deployment saved under `deployments/sepolia/`, which includes MockWBTC and MockUSDC (they go through the same deploy script).
 5. Addresses end up in `packages/hardhat/deployments.json` (committed, keyed by network name). Local runs go to `deployments.local.json` (gitignored).
 

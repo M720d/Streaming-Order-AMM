@@ -1,98 +1,178 @@
 {
-  "_status": "DRAFT. Structure is a best guess: copy these values into the template from the course brief. null = needs the Sepolia deployment.",
-  "project": "Streaming-Order AMM",
-  "course": "FRE-GY 6931 Blockchain & Cryptocurrency, Fall 2026",
-  "topic": "Topic 1: Automated Market Maker",
-  "team": [
-    { "name": "Aditya Shah", "netid": "as22008" },
-    { "name": "Siddhant Yadav", "netid": "sy4583" },
-    { "name": "Dev Salvi", "netid": "ds8259" }
+  "team": "Streaming-Order AMM",
+  "members": [
+    {
+      "name": "Aditya Shah",
+      "netid": "as22008"
+    },
+    {
+      "name": "Siddhant Yadav",
+      "netid": "sy4583"
+    },
+    {
+      "name": "Dev Salvi",
+      "netid": "ds8259"
+    }
   ],
+  "topic": "AMM",
   "repository": "https://github.com/M720d/Streaming-Order-AMM",
-  "final_tag": "final",
-  "final_commit": null,
-  "network": { "name": "sepolia", "chain_id": 11155111 },
-  "contracts": {
-    "MockWBTC": { "address": null, "deploy_tx": null, "etherscan_verified": null },
-    "MockUSDC": { "address": null, "deploy_tx": null, "etherscan_verified": null },
-    "Pool": { "address": null, "deploy_tx": null, "etherscan_verified": null, "note": "also the LP share token (ERC-20)" },
-    "PriceGuard": { "address": null, "deploy_tx": null, "etherscan_verified": null },
-    "OrderBook": { "address": null, "deploy_tx": null, "etherscan_verified": null },
-    "ChainlinkBtcUsdFeed": { "address": "0x1b44F3514812d835EB1BDB0acB33d3fA3351Ee43", "external": true }
+  "tag": "final",
+  "network": "sepolia",
+  "token": {
+    "standard": "ERC-20",
+    "name": "Streaming AMM LP (SALP), the Pool's LP share token",
+    "address": "0x9461fd23335242663ddf7a9fae994995df7fc8e9"
   },
-  "key_transactions": {
-    "seed_pool_addLiquidity": null,
-    "swapExactIn": null,
-    "createOrder": null,
-    "executeSlice_by_keeper": null,
-    "sliceSkipped_or_guard_evidence": null,
-    "arbitrage_refill_swap": null,
-    "claim": null,
-    "cancel": null
-  },
+  "contracts": [
+    {
+      "name": "Pool",
+      "address": "0x9461fd23335242663ddf7a9fae994995df7fc8e9",
+      "role": "constant-product pool (30 bps fee), TWAP accumulator, and the SALP LP-share ERC-20"
+    },
+    {
+      "name": "OrderBook",
+      "address": "0x9c20dbb0bb17a0532348e69502af3b8b44fefa62",
+      "role": "ERC-721 streaming orders (SORDER): holds the unsold balance, runs equal slices, pays the NFT holder"
+    },
+    {
+      "name": "PriceGuard",
+      "address": "0xe52d276bec7b96bcdd0632050cad5717956289df",
+      "role": "Chainlink BTC/USD check (staleness, sign, round) and pool-vs-oracle deviation band; owner can change only two capped numbers"
+    },
+    {
+      "name": "MockWBTC",
+      "address": "0x2c95a78b3a3fc73c16bdd6394bfe30cc51d37d12",
+      "role": "test WBTC (8 decimals) with a capped faucet"
+    },
+    {
+      "name": "MockUSDC",
+      "address": "0x9cd5587b22d15790a5880d37837cdd091c9ea0b5",
+      "role": "test USDC (6 decimals) with a capped faucet"
+    }
+  ],
+  "transactions": [
+    {
+      "hash": "0xa9f518956712c252595a1c82f20f3f5135a4b7899a7967472d8258ae03ea0fd5",
+      "shows": "Pool deployed (verified on Etherscan)"
+    },
+    {
+      "hash": "0xe52450a33066410a53cacb31113b19f987abd3738f4bb12ab25dd62cc9f2c026",
+      "shows": "PriceGuard deployed (verified)"
+    },
+    {
+      "hash": "0xbb0acbd1e5668e3ad448a76b1b50f65c6d3e0c558ba36da19733dd5757385572",
+      "shows": "OrderBook deployed (verified)"
+    },
+    {
+      "hash": "0x688d1fd66089f0b4403d7b5b0bdefd9d6438755058c0497c8b1a896ba38a9713",
+      "shows": "MockWBTC deployed (verified)"
+    },
+    {
+      "hash": "0xae7c03dc001999a316843c1422e1adb8d5a8c77671a827d4c232e13f8d108c30",
+      "shows": "MockUSDC deployed (verified)"
+    },
+    {
+      "hash": "0xf2bea583b5a9303af541ff6593d586d98daba0ece865954d11fd89272098e828",
+      "shows": "first addLiquidity: pool seeded at the live Chainlink price, LP shares minted"
+    },
+    {
+      "hash": "0x9d02d4bd8eafa36b097c0b0133eafe97f42ec78ed9b9e90962c2c5d9f5460307",
+      "shows": "createOrder from the web app: 5 WBTC, 3 slices, 60 s, 3% tolerance; order NFT minted"
+    },
+    {
+      "hash": "0x5e2d57674c0b396c4c36d080436d7d655d7cc986467b3a595591e76c3f63afa7",
+      "shows": "executeSlice 1 by the keeper script (slice output reconciled with the model to the last unit)"
+    },
+    {
+      "hash": "0xb3ba7ea07ecbee1d9ed18f651070cb568143cf43b1d73827bb78ef25c27ac942",
+      "shows": "executeSlice 2 by the keeper script"
+    },
+    {
+      "hash": "0x24a0d1fae617dd5ddd4482a2e74e3875eddd3df0a4de36f908a9c35700fe297c",
+      "shows": "executeSlice 3 by the keeper script (last slice, remainder)"
+    },
+    {
+      "hash": "0xaadb43e7976effad5baef0045f5b0d5595e2055beadf6aa9c4ede452b7233e43",
+      "shows": "arbitrage bot trades the pool back toward Chainlink before slice 1 (refill)"
+    },
+    {
+      "hash": "0x62d1c0a52e0db14e757eefede7b677e5aa11275f10bca5e18011585421afc581",
+      "shows": "arbitrage bot refill between slices 1 and 2"
+    },
+    {
+      "hash": "0x3253d705d0c7c4d5633fd983e26305148e25705e0e27c19a1d67eab341b2b91a",
+      "shows": "claim by the NFT holder's wallet: 387,501.20 USDC paid to the holder"
+    },
+    {
+      "hash": "0x6e434545a9392ba6a9a1de8c27286ebe8f03bd18c98ac4d2ddf58fd35446c221",
+      "shows": "rehearsal order 1 created (1 WBTC, 3 slices)"
+    },
+    {
+      "hash": "0x3a523cc9c5ba6c40d79dd4f9c85a65134e1440cc80ce003563eb7a42ad77258b",
+      "shows": "rehearsal order 1, slice 1 by the keeper"
+    },
+    {
+      "hash": "0x5e24556abf7d2eed68314893d45b4c2d232c9c80e1033bfa337a0dca81800abd",
+      "shows": "rehearsal order 1 claimed"
+    },
+    {
+      "hash": "0xd41947f781aa36b42b61dc9cc48b70a75869ad178123642ca82ac0b5aaff73d7",
+      "shows": "video demo order 5: createOrder from the web app (2 WBTC, 3 slices, 60 s)"
+    },
+    {
+      "hash": "0xa995edcc425af9e719e0d5265e8640b35a18c25a2fdc59ec5cde6ecab38ccb48",
+      "shows": "video demo order 5: slice 1 by the keeper script"
+    },
+    {
+      "hash": "0xc03addd9b1636ac85b71c903653a9d3ec3ea4c1fc0a80b7fa90a1ee759766faf",
+      "shows": "video demo order 5: claim of the first slice's proceeds (50,982.31 USDC)"
+    },
+    {
+      "hash": "0x0b4a33c0838fe87241e228d519a0dcf96309ca646c10122f4a383539d4481a85",
+      "shows": "video demo order 5: slice 2 by the keeper script"
+    },
+    {
+      "hash": "0xdd856a6b03a931d6abc8e92677e7c7ac9c8795cf7c05e96aaa09d53c8beba03e",
+      "shows": "video demo order 5: slice 3 (last) by the keeper script"
+    }
+  ],
   "features": [
     {
-      "feature": "Constant-product pool, 30 bps fee, LP shares, TWAP",
-      "files": ["packages/hardhat/contracts/Pool.sol", "packages/hardhat/test/Pool.ts"],
-      "tx": null, "video_timestamp": null
+      "feature": "Chainlink price check (staleness, sign, round) used as a guard before each slice",
+      "evidence": "contracts/PriceGuard.sol / test/PriceGuard.ts / tx 0x5e2d57674c0b396c4c36d080436d7d655d7cc986467b3a595591e76c3f63afa7"
     },
     {
-      "feature": "ERC-721 streaming orders in a fixed number of equal slices",
-      "files": ["packages/hardhat/contracts/OrderBook.sol", "packages/hardhat/test/OrderBook.ts"],
-      "tx": null, "video_timestamp": null
+      "feature": "TWAP oracle from the pool's own price accumulator",
+      "evidence": "packages/hardhat/contracts/Pool.sol (consultTwapE18) / test/Pool.ts"
     },
     {
-      "feature": "Chainlink price guard with staleness, sign and round checks; skip on deviation",
-      "files": ["packages/hardhat/contracts/PriceGuard.sol", "packages/hardhat/test/PriceGuard.ts"],
-      "tx": null, "video_timestamp": null
-    },
-    {
-      "feature": "Off-chain keeper (no double-send, logs with tx hash)",
-      "files": ["packages/hardhat/scripts/keeper.ts", "packages/hardhat/scripts/offchain/keeperCore.ts", "docs/offchain.md"],
-      "tx": null, "video_timestamp": null
+      "feature": "Off-chain keeper script that calls executeSlice (no double-send, logs tx hash)",
+      "evidence": "packages/hardhat/scripts/keeper.ts / tx 0x5e2d57674c0b396c4c36d080436d7d655d7cc986467b3a595591e76c3f63afa7"
     },
     {
       "feature": "Arbitrage bot that refills the pool between slices",
-      "files": ["packages/hardhat/scripts/arb.ts", "packages/hardhat/scripts/offchain/arbCore.ts"],
-      "tx": null, "video_timestamp": null
+      "evidence": "packages/hardhat/scripts/arb.ts / tx 0xaadb43e7976effad5baef0045f5b0d5595e2055beadf6aa9c4ede452b7233e43"
     },
     {
-      "feature": "End-to-end tests: streamed proceeds beat a lump sum (+292 bps); revert test",
-      "files": ["packages/hardhat/test/EndToEnd.ts"],
-      "tx": null, "video_timestamp": null
+      "feature": "Test suite with one command (yarn test, 92 passing) including revert, reentrancy and invariant tests",
+      "evidence": "packages/hardhat/test/ / EndToEnd.ts TooEarly revert test"
     },
     {
-      "feature": "One-command test suite with expected-revert, reentrancy and invariant tests (94 passing)",
-      "files": ["packages/hardhat/test/"], "command": "yarn test",
-      "tx": null, "video_timestamp": null
+      "feature": "Slither scan with each finding fixed or explained",
+      "evidence": "docs/slither-full.md, docs/slither-pool.md, docs/slither-orders.md"
     },
     {
-      "feature": "Slither with every finding fixed or explained",
-      "files": ["docs/slither-full.md", "docs/slither-pool.md", "docs/slither-orders.md"],
-      "tx": null, "video_timestamp": null
+      "feature": "Gas measured with before-and-after changes (pool storage packing, 2-slot order storage)",
+      "evidence": "docs/gas-pool.md, docs/gas-orders.md; measured Sepolia gas in docs/data/evidence_sepolia.json"
     },
     {
-      "feature": "Gas measurement with before-and-after changes",
-      "files": ["docs/gas-pool.md", "docs/gas-orders.md", "docs/data/gas_costs_local.json"],
-      "tx": null, "video_timestamp": null
+      "feature": "Front end: wallet, pool and oracle view, impact preview, confirmation step, order progress, claim and cancel, stale-feed warning, plain-language errors",
+      "evidence": "packages/nextjs/app/page.tsx, docs/frontend.md / tx 0x9d02d4bd8eafa36b097c0b0133eafe97f42ec78ed9b9e90962c2c5d9f5460307"
     },
     {
-      "feature": "Front end: create order with impact preview and confirmation, progress, claim, cancel, stale-feed warning",
-      "files": ["packages/nextjs/app/page.tsx", "packages/nextjs/app/_components/", "docs/frontend.md"],
-      "url": null, "tx": null, "video_timestamp": null
-    },
-    {
-      "feature": "Financial analysis Parts A, B, C with model-to-contract reconciliation",
-      "files": ["docs/analysis_pool.ipynb", "docs/analysis_slicing.ipynb", "docs/analysis_costs.ipynb"],
-      "sepolia_reconciliation_tx": null, "video_timestamp": null
+      "feature": "Financial analysis reconciled with Sepolia: model equals on-chain output for 3 of 3 slices; streamed order +66 bps over a lump sum",
+      "evidence": "docs/analysis_slicing.ipynb, docs/analysis_costs.ipynb, report Section 7 / tx 0x5e2d57674c0b396c4c36d080436d7d655d7cc986467b3a595591e76c3f63afa7"
     }
   ],
-  "report_sections": [
-    "docs/report-sections-1-6-7-8.md",
-    "docs/report-sections-2-4.md",
-    "docs/report-section-4-7-part-c.md",
-    "docs/report-sections-3-5.md"
-  ],
-  "video": { "url": null, "plan": "docs/video-plan.md" },
-  "ai_use_log": "docs/ai-use.md"
+  "video": "video/final_project_demo.mov (in the submission zip uploaded to Brightspace)"
 }
