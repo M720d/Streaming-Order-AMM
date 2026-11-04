@@ -1,5 +1,7 @@
 # Video plan
 
+The word-for-word script for each speaker is in `docs/video-script.md`; this file keeps the longer checklist.
+
 Target length about 9 minutes (**[OPEN]** check the brief's limit and trim to fit). Live on Sepolia with at least one real
 transaction shown on Etherscan. Every member speaks. Record the screen at 1080p with the browser zoomed to 125%.
 
