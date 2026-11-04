@@ -41,6 +41,7 @@
     "evidence": "yarn workspace @se-2/hardhat evidence",
     "fund-arb": "yarn workspace @se-2/hardhat fund-arb",
     "send-eth": "yarn workspace @se-2/hardhat send-eth",
+    "demo-check": "yarn workspace @se-2/hardhat demo-check",
     "lint": "yarn next:lint && yarn hardhat:lint",
     "next:build": "yarn workspace @se-2/nextjs build",
     "next:check-types": "yarn workspace @se-2/nextjs check-types",

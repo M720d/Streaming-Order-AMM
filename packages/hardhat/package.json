@@ -21,6 +21,7 @@
     "evidence": "tsx scripts/collectEvidence.ts",
     "fund-arb": "tsx scripts/fundArb.ts",
     "send-eth": "tsx scripts/sendEthToBots.ts",
+    "demo-check": "tsx scripts/demoCheck.ts",
     "hardhat-verify": "hardhat verify",
     "lint": "eslint",
     "lint-staged": "eslint",
