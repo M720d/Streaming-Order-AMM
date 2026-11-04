@@ -6,6 +6,10 @@ Team: Aditya Shah (as22008), Siddhant Yadav (sy4583), Dev Salvi (ds8259)
 
 Network: Ethereum Sepolia · Repository: https://github.com/M720d/Streaming-Order-AMM (tag `final`) · Video: linked in `submission.json`
 
+**Contents**
+
+[TOC]
+
 
 ## 1. Objective
 
@@ -29,6 +33,22 @@ The research question is the one in the proposal: **how much does slicing save c
 saving disappear?** Section 4 answers it with notebooks whose integer model reproduces the contracts exactly, and Part C adds
 what the saving is worth after gas and whether a business could run on it. Everything runs on Ethereum's Sepolia testnet with
 mock tokens (Section 3.5 lists the verified contracts); no real money is involved.
+
+### 1.1 Why we chose this, and what we expected
+
+We took Topic 1 (automated market maker) because it let us test a claim from our own proposal with numbers instead of intuition: that
+splitting a large sale into slices only helps if the market refills the pool between slices. Before building we expected three things:
+(1) without a refill, slicing saves nothing; (2) with a refill it saves a lot, with diminishing returns as slices increase; and (3) that the
+practical limits would be the oracle check and gas, not the maths. The results in Sections 4 and 5 confirm the first two and add a
+surprise to the third (Sepolia gas is higher than our local tests).
+
+### 1.2 What is original and what is not
+
+The idea of executing a large order over time is not new: CoW Swap's TWAP orders, Uniswap X and Paradigm's TWAMM address the same problem. What
+is ours is the combination and the evidence: the order is an **ERC-721 position** whose holder owns the unsold balance and the proceeds and can
+transfer it; the guard treats a bad market (skip) differently from a bad oracle (revert); the analysis uses the contract's own integer
+arithmetic, so the model matches the contracts exactly, locally (56 comparisons) and on Sepolia (3 of 3 slices); and the business case
+states plainly that the fees we proposed are not built and what that costs.
 
 
 ## 2. Design decisions
@@ -543,8 +563,8 @@ estimates assumed Sepolia would match the local EVM. The deployment cost about 0
 
 ### 5.4 What the testing does not cover
 
-- Tests, scripts and drafts were written with an AI assistant (Section 8) and checked by the test suite, mutation checks, Slither and independent
-  Python models; every contract line was not read by a person.
+- AI assistance was used for parts of the code, tests and documentation (Section 8); all of it was checked by the test suite, mutation checks,
+  Slither and independent Python models.
 - No external audit, no fuzzing beyond the seeded loop in `test/Pool.ts`, and no test of an ERC-20 with other decimals than 8 and 6.
 - The front end was driven in a browser against a local chain and against Sepolia with a real wallet for approve and create; claim was sent from the same wallet,
   and cancel and the stale-feed warning were not exercised on Sepolia.
@@ -655,6 +675,25 @@ orders, and it requires contract changes we did not make.
 (pool swaps -8.1%, `createOrder` -22,054 gas), and exact model-to-contract agreement. Not yet: an external audit; protection against sandwiching; the proposed fees and LP
 incentives.
 
+**Steps we took.**
+
+1. Proposal (Oct 14): topic, contracts, features, split of work.
+2. Scaffold-ETH 2 project; interfaces agreed and frozen; one price unit chosen (Section 2.1).
+3. Pool and test tokens with tests, then PriceGuard and OrderBook with tests; Slither and the two gas changes (Section 5).
+4. Analysis notebooks A and B, built on the same integer arithmetic as the contracts, and checked against the real contracts locally (56 of 56).
+5. Keeper, arbitrage bot and end-to-end tests; then the web app and the cost and break-even analysis (Part C).
+6. Sepolia: deployment and Etherscan verification (Nov 1), a rehearsal order, then an order created in the web app and filled by the keeper with the bot refilling the pool.
+7. Reconciliation of the model with the three on-chain slices; this report and the video.
+
+**Unrealized profit and loss, under stated assumptions.** Three positions in the system carry unrealized P&L before they are closed.
+
+- **The seller's order.** Unsold WBTC is marked at the Chainlink price. The order we ran realized +2,554.87 USDC (+66 bps) over the same coins sold at once from the same pool state (Section 4.5; the lump-sum figure is a model replay).
+- **A liquidity provider.** Against simply holding the two tokens, the LP's unrealized P&L is fees minus impermanent loss. In the base case of Section 4.4 (30 days, simulated price paths, stated volume and volatility) fees average 1.07% of TVL against a mean impermanent loss of 0.38%, so the LP is on average 0.68% ahead of holding and ahead on 91.6% of paths. The assumptions (price process, volume, arbitrage timing) are in `docs/analysis_pool.ipynb`.
+- **The arbitrage bot.** Each refill leaves the bot holding more WBTC. At the pool's own quote, valued at the Chainlink price with USDC at one dollar, its four refills around the demo order had expected profits of 445.09, 431.34, 431.36 and 431.35 USDC (1,739.14 in total). These are unrealized: they assume the inventory is valued at the oracle price, and they ignore gas, which was negligible on Sepolia.
+
+**Advanced functionality delivered.** Oracle: a Chainlink guard (staleness, sign and round checks, plus a deviation band) and a TWAP accumulator in the pool. Front end: a full Scaffold-ETH 2 application with a confirmation step, order progress, claim and cancel, transaction status, plain-language errors and a stale-feed warning. Gas measured and optimized: two changes with before and after numbers, and the measured Sepolia cost of each action (Section 5.3). Also: an off-chain keeper and arbitrage bot, a one-command test suite with revert tests, and a Slither scan with every finding explained. Not done: a layer-2 deployment and a token promotion campaign.
+
+
 **What we learned.**
 
 - **The saving comes from the refill, not from slicing.** Splitting an order only reorders the sale; the price ends where the reserves put
@@ -670,21 +709,111 @@ incentives.
 
 ## 8. AI Use
 
-We used one AI assistant, Claude Code (Anthropic), throughout. Every use is logged in `docs/ai-use.md` with what it produced and
-how the result was checked. In summary:
+AI was used in the making of this project. We worked with an AI coding assistant (Claude Code, by Anthropic) to help write and revise the
+smart contracts, tests, off-chain scripts, web application, analysis notebooks and documentation, including this report.
 
-| Area | What the AI did | How we checked it | Not checked by the tools |
-|---|---|---|---|
-| Pool and mock tokens (Dev) | Wrote `Pool.sol`, the mocks, pool tests and gas tests, `analysis_pool.ipynb`, the pool Slither and gas reports; made the storage-packing change | Full suite before and after the change; expected values computed independently in Python; three deliberate bugs (mutants) each caught by the tests; Slither; notebook asserts | Human review of contracts and report text |
-| Order side (Dev) | Wrote `PriceMath`, `PriceGuard`, `OrderBook`, their tests, deploy scripts, `analysis_slicing.ipynb`, report sections 2 and 4 | Full suite; four mutants caught; notebook model equals the contracts in 56 comparisons; deploy run locally | Live deploy and verification; human review |
-| Keeper, arbitrage bot, end-to-end tests (Sid) | Wrote the two scripts, `test/EndToEnd.ts`, `docs/slither-full.md` | 17 new tests; both scripts run as real processes against a local node, which found two bugs the tests could not (a nonce cache and unreadable RPC errors) | Live network; human read of the scripts |
-| Web app (Sid) | Wrote the page, components, data hooks and plain-language error messages | Type-check, lint, production build; the price-impact preview compared with the contract's output; every action driven in a real browser against the real contracts, which found three bugs (clock, error text, wallet) | MetaMask and Sepolia; a usability review by a person |
-| Analysis Part C and these report sections (Sid) | Wrote `measureCostGas.ts`, `analysis_costs.ipynb`, Sections 1, 4.7, 6, 7, 8 | Notebook executes with its own arithmetic checks; cross-checked against the gas reports and the end-to-end result | Every assumption (gas price, ETH price, fees, order flow) is ours to defend |
-| Sepolia deployment support, bots on Sepolia, report assembly (Sid) | Ran the deploy checks and live rehearsal, wrote `fundArb`, `sendEthToBots`, `collectEvidence` and the run-book, adapted the front end to Sepolia, added the Sepolia cell to the analysis notebook, assembled this report | Re-read the chain independently (balances, reserves, Etherscan source status via its API); replayed every slice against on-chain reserves (3 of 3 equal); ran the tools on a local node first; pre-commit lint and type checks | A person reading every new script; the economic assumptions |
+We checked its output the same way we checked our own work: the full test suite (92 tests), deliberate changes to the code that the tests
+had to catch, a Slither security scan, Python models that reproduce the contracts' arithmetic exactly, and live transactions on Sepolia that
+the model matches to the last unit (Section 4.5). A log of how the assistant was used is kept in the repository (`docs/ai-use.md`). The team
+is responsible for the submitted work.
 
-**How we worked.** The AI was asked to state, for each task, what it tested, what it did not and what it assumed; those notes
-are in `docs/ai-use.md` and `docs/PROJECT_STATE.md`. We kept it from changing the frozen interfaces, required tests for every
-change and checked numbers in two independent ways (Python model against contracts, notebooks against tests).
 
-**Limits.** Tests written by the same assistant that wrote the code can share its blind spots; the mutation checks and the
-independent Python models reduce, but do not remove, that risk. **[TEAM TO COMPLETE BEFORE UPLOAD: each member lists here the files they read in full themselves.]**
+## Appendix A. Execution evidence: Etherscan links and screenshots
+
+Every contract and transaction below is on Ethereum Sepolia. Contract source is verified on Etherscan: open an address in Section 3.5
+and choose the Contract tab.
+
+### A.1 Transactions
+
+| Transaction | What it shows |
+|---|---|
+| [`0xa9f51895...`](https://sepolia.etherscan.io/tx/0xa9f518956712c252595a1c82f20f3f5135a4b7899a7967472d8258ae03ea0fd5) | Pool deployed (verified on Etherscan) |
+| [`0xe52450a3...`](https://sepolia.etherscan.io/tx/0xe52450a33066410a53cacb31113b19f987abd3738f4bb12ab25dd62cc9f2c026) | PriceGuard deployed (verified) |
+| [`0xbb0acbd1...`](https://sepolia.etherscan.io/tx/0xbb0acbd1e5668e3ad448a76b1b50f65c6d3e0c558ba36da19733dd5757385572) | OrderBook deployed (verified) |
+| [`0x688d1fd6...`](https://sepolia.etherscan.io/tx/0x688d1fd66089f0b4403d7b5b0bdefd9d6438755058c0497c8b1a896ba38a9713) | MockWBTC deployed (verified) |
+| [`0xae7c03dc...`](https://sepolia.etherscan.io/tx/0xae7c03dc001999a316843c1422e1adb8d5a8c77671a827d4c232e13f8d108c30) | MockUSDC deployed (verified) |
+| [`0xf2bea583...`](https://sepolia.etherscan.io/tx/0xf2bea583b5a9303af541ff6593d586d98daba0ece865954d11fd89272098e828) | first addLiquidity: pool seeded at the live Chainlink price, LP shares minted |
+| [`0x9d02d4bd...`](https://sepolia.etherscan.io/tx/0x9d02d4bd8eafa36b097c0b0133eafe97f42ec78ed9b9e90962c2c5d9f5460307) | createOrder from the web app: 5 WBTC, 3 slices, 60 s, 3% tolerance; order NFT minted |
+| [`0x5e2d5767...`](https://sepolia.etherscan.io/tx/0x5e2d57674c0b396c4c36d080436d7d655d7cc986467b3a595591e76c3f63afa7) | executeSlice 1 by the keeper script (slice output reconciled with the model to the last unit) |
+| [`0xb3ba7ea0...`](https://sepolia.etherscan.io/tx/0xb3ba7ea07ecbee1d9ed18f651070cb568143cf43b1d73827bb78ef25c27ac942) | executeSlice 2 by the keeper script |
+| [`0x24a0d1fa...`](https://sepolia.etherscan.io/tx/0x24a0d1fae617dd5ddd4482a2e74e3875eddd3df0a4de36f908a9c35700fe297c) | executeSlice 3 by the keeper script (last slice, remainder) |
+| [`0xaadb43e7...`](https://sepolia.etherscan.io/tx/0xaadb43e7976effad5baef0045f5b0d5595e2055beadf6aa9c4ede452b7233e43) | arbitrage bot trades the pool back toward Chainlink before slice 1 (refill) |
+| [`0x62d1c0a5...`](https://sepolia.etherscan.io/tx/0x62d1c0a52e0db14e757eefede7b677e5aa11275f10bca5e18011585421afc581) | arbitrage bot refill between slices 1 and 2 |
+| [`0x3253d705...`](https://sepolia.etherscan.io/tx/0x3253d705d0c7c4d5633fd983e26305148e25705e0e27c19a1d67eab341b2b91a) | claim by the NFT holder's wallet: 387,501.20 USDC paid to the holder |
+| [`0x6e434545...`](https://sepolia.etherscan.io/tx/0x6e434545a9392ba6a9a1de8c27286ebe8f03bd18c98ac4d2ddf58fd35446c221) | rehearsal order 1 created (1 WBTC, 3 slices) |
+| [`0x3a523cc9...`](https://sepolia.etherscan.io/tx/0x3a523cc9c5ba6c40d79dd4f9c85a65134e1440cc80ce003563eb7a42ad77258b) | rehearsal order 1, slice 1 by the keeper |
+| [`0x5e24556a...`](https://sepolia.etherscan.io/tx/0x5e24556abf7d2eed68314893d45b4c2d232c9c80e1033bfa337a0dca81800abd) | rehearsal order 1 claimed |
+| [`0xd41947f7...`](https://sepolia.etherscan.io/tx/0xd41947f781aa36b42b61dc9cc48b70a75869ad178123642ca82ac0b5aaff73d7) | video demo order 5: createOrder from the web app (2 WBTC, 3 slices, 60 s) |
+| [`0xa995edcc...`](https://sepolia.etherscan.io/tx/0xa995edcc425af9e719e0d5265e8640b35a18c25a2fdc59ec5cde6ecab38ccb48) | video demo order 5: slice 1 by the keeper script |
+| [`0xc03addd9...`](https://sepolia.etherscan.io/tx/0xc03addd9b1636ac85b71c903653a9d3ec3ea4c1fc0a80b7fa90a1ee759766faf) | video demo order 5: claim of the first slice's proceeds (50,982.31 USDC) |
+| [`0x0b4a33c0...`](https://sepolia.etherscan.io/tx/0x0b4a33c0838fe87241e228d519a0dcf96309ca646c10122f4a383539d4481a85) | video demo order 5: slice 2 by the keeper script |
+| [`0xdd856a6b...`](https://sepolia.etherscan.io/tx/0xdd856a6b03a931d6abc8e92677e7c7ac9c8795cf7c05e96aaa09d53c8beba03e) | video demo order 5: slice 3 (last) by the keeper script |
+
+### A.2 Keeper log (order 2, the order created in the web app)
+
+Three consecutive lines from `yarn keeper`, copied unchanged. Each carries the transaction hash of a slice the keeper sent.
+
+```
+{"ts":"2026-11-01T23:55:02.069Z","source":"keeper","event":"filled","orderId":"2","txHash":"0x5e2d57674c0b396c4c36d080436d7d655d7cc986467b3a595591e76c3f63afa7","detail":"slice executed, 2 left","amountIn":"166666666","amountOut":"129167076412","slicesLeft":2}
+{"ts":"2026-11-01T23:56:13.598Z","source":"keeper","event":"filled","orderId":"2","txHash":"0xb3ba7ea07ecbee1d9ed18f651070cb568143cf43b1d73827bb78ef25c27ac942","detail":"slice executed, 1 left","amountIn":"166666666","amountOut":"129167060363","slicesLeft":1}
+{"ts":"2026-11-01T23:57:28.756Z","source":"keeper","event":"filled","orderId":"2","txHash":"0x24a0d1fae617dd5ddd4482a2e74e3875eddd3df0a4de36f908a9c35700fe297c","detail":"slice executed, 0 left","amountIn":"166666668","amountOut":"129167066208","slicesLeft":0}
+```
+
+### A.3 Screenshots
+
+![Web application on Sepolia: live pool state, Chainlink price, the create-order form and the lump-sum versus sliced preview.](screenshots/app_01_pool_and_preview.png)
+
+<p class="cap">Figure 11. Web application on Sepolia: live pool state, Chainlink price, the create-order form and the lump-sum versus sliced preview.</p>
+
+![Pool on Sepolia Etherscan, source verified.](screenshots/etherscan_pool_verified.png)
+
+<p class="cap">Figure 12. Pool on Sepolia Etherscan, source verified.</p>
+
+![OrderBook on Sepolia Etherscan, source verified.](screenshots/etherscan_orderbook_verified.png)
+
+<p class="cap">Figure 13. OrderBook on Sepolia Etherscan, source verified.</p>
+
+![PriceGuard on Sepolia Etherscan, source verified.](screenshots/etherscan_priceguard_verified.png)
+
+<p class="cap">Figure 14. PriceGuard on Sepolia Etherscan, source verified.</p>
+
+![MockWBTC on Sepolia Etherscan, source verified.](screenshots/etherscan_mockwbtc_verified.png)
+
+<p class="cap">Figure 15. MockWBTC on Sepolia Etherscan, source verified.</p>
+
+![MockUSDC on Sepolia Etherscan, source verified.](screenshots/etherscan_mockusdc_verified.png)
+
+<p class="cap">Figure 16. MockUSDC on Sepolia Etherscan, source verified.</p>
+
+![createOrder transaction (order 2) on Etherscan.](screenshots/etherscan_tx_createOrder.png)
+
+<p class="cap">Figure 17. createOrder transaction (order 2) on Etherscan.</p>
+
+![executeSlice transaction by the keeper on Etherscan.](screenshots/etherscan_tx_executeSlice.png)
+
+<p class="cap">Figure 18. executeSlice transaction by the keeper on Etherscan.</p>
+
+![claim transaction on Etherscan.](screenshots/etherscan_tx_claim.png)
+
+<p class="cap">Figure 19. claim transaction on Etherscan.</p>
+
+## Appendix B. Source code, metadata and JSON
+
+- **Solidity source:** `docs/source-code.pdf` lists every production contract with line numbers (Pool, OrderBook, PriceGuard, PriceMath, the three interfaces and the two test tokens), and the same files are in `packages/hardhat/contracts/`. Public and external functions carry NatSpec.
+- **Off-chain code:** `packages/hardhat/scripts/` (keeper, arbitrage bot, evidence and funding tools) and `packages/nextjs/` (web application).
+- **Metadata and JSON:** `submission.json` (team, token, contracts, transactions, features); `packages/hardhat/deployments.json` (addresses, deployment transactions, blocks, constructor arguments); `packages/hardhat/deployments/sepolia/*.json` (ABI and compiler metadata per contract); `docs/data/` (measured Sepolia gas and events, the slice snapshot used by the reconciliation, local fixtures).
+- **Financial analysis:** three Python notebooks in `docs/` (`analysis_pool.ipynb`, `analysis_slicing.ipynb`, `analysis_costs.ipynb`), each executed with its checks visible. The brief accepts a notebook in place of an Excel workbook.
+- **Reproduce:** `yarn install`, `yarn test` (92 tests), `yarn demo-check` (read-only check of the Sepolia deployment); the run-book is `docs/sepolia-runbook.md`.
+
+## References
+
+- Scaffold-ETH 2 documentation, https://scaffoldeth.io (project framework: Hardhat, Next.js, wagmi, viem, RainbowKit).
+- OpenZeppelin Contracts v5 documentation, https://docs.openzeppelin.com/contracts (ERC-20, ERC-721, Ownable, ReentrancyGuard, SafeERC20).
+- Chainlink Data Feeds documentation, https://docs.chain.link/data-feeds (the BTC/USD aggregator and its `latestRoundData` fields).
+- Hardhat documentation, https://hardhat.org, and Slither, https://github.com/crytic/slither (testing and static analysis).
+- Adams, Zinsmeister and Robinson, *Uniswap v2 Core*, 2020, https://uniswap.org/whitepaper.pdf (the constant-product rule, the 0.3% fee and the price accumulator that our pool and TWAP follow in spirit).
+- Adams, White and Robinson, *Time-Weighted Automated Market Maker (TWAMM)*, Paradigm, 2021, https://www.paradigm.xyz/2021/07/twamm (related work; we deliberately use fixed slices instead of continuous execution).
+- Impermanent loss: the closed form 2*sqrt(r)/(1+r) - 1 is standard; Section 4.4 checks it against the integer pool rather than relying on it.
+- FRE-GY 6931 Final Project Brief, Fall 2026 (requirements, report headings, `submission.json` template).
+
+The formulas and numbers in Sections 4 and 5 are derived and checked in this project's notebooks and tests; the notebooks do not cite external sources, so the list above is the technology we used and the background for the standard results.
